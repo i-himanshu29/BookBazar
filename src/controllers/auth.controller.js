@@ -2,8 +2,11 @@ import { asyncHandler } from "../utils/async-handler.util.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
 import { User } from "../models/user.model.js";
-
-import { emailVerificationMailgenContent } from "../utils/mail.util.js";
+import {
+   sendEmail,
+   emailVerificationMailgenContent,
+} from "../utils/mail.util.js";
+import crypto from "crypto"
 
 const registerUser = asyncHandler(async (req, res) => {
    const { email, name, password } = req.body;
@@ -14,11 +17,11 @@ const registerUser = asyncHandler(async (req, res) => {
 
    try {
       const existingUser = await User.findOne({
-         $or: [{ name }, { email }],
+         email,
       });
 
       if (existingUser) {
-         throw new ApiError(409, "User with email or username already exists");
+         throw new ApiError(409, "User with email already exists");
       }
 
       const user = await User.create({
@@ -66,4 +69,44 @@ const registerUser = asyncHandler(async (req, res) => {
    }
 });
 
-export { registerUser };
+const verifyUser = asyncHandler(async (req, res) => {
+   const { token } = req.params;
+   console.log(token);
+
+   if (!token) {
+      throw new ApiError(400, "Invalid Token");
+   }
+
+   try {
+      const hashedToken = crypto
+         .createHash("sha256")
+         .update(token)
+         .digest("hex");
+      const user = await User.findOne({
+         emailVerificationToken: hashedToken,
+         emailVerificationExpiry: { $gt: Date.now() },
+      });
+
+      if (!user) {
+         throw new ApiError(400, "Invalid token");
+      }
+
+      user.isEmailVerified = true;
+      user.emailVerificationToken = undefined;
+      user.emailVerificationExpiry = undefined;
+
+      await user.save();
+
+      return res
+         .status(201)
+         .json(new ApiResponse(200, user, "Email verified Successfully"));
+   } catch (error) {
+      console.log("Verification failed",error);
+      throw new ApiError(
+         error.statusCode || 500,
+         error?.message || "Internal server error",
+      );
+   }
+});
+
+export { registerUser ,verifyUser};

@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 //import routes
 import healthCheckRouter from "./routes/healthcheck.route.js";
-import  registerRouter from "./routes/auth.route.js";
+import  userRoutes from "./routes/auth.route.js";
 
 const app = express();
 app.use(express.json());
@@ -24,7 +24,7 @@ app.use(
 
 // here routes
 app.use("/api/v1/healthcheck", healthCheckRouter);
-app.use("/api/v1/users", registerRouter);
+app.use("/api/v1/users", userRoutes);
 
 
 export default app;
