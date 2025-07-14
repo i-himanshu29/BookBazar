@@ -1,4 +1,4 @@
-import { body,param } from "express-validator";
+import { body, param } from "express-validator";
 import { validate } from "../middlewares/validator.middleware.js";
 
 const userRegistrationValidator = () => {
@@ -31,60 +31,66 @@ const userRegistrationValidator = () => {
    ];
 };
 
-const loginValidator = [
-   body("email")
-      .trim()
-      .notEmpty()
-      .withMessage("email is required")
-      .isEmail()
-      .withMessage("Please enter a valid email"),
-   body("password").trim().notEmpty().withMessage("password is required"),
+const loginValidator = () => {
+   return [
+      body("email")
+         .trim()
+         .notEmpty()
+         .withMessage("email is required")
+         .isEmail()
+         .withMessage("Please enter a valid email"),
+      body("password").trim().notEmpty().withMessage("password is required"),
+   ];
+};
 
-   validate,
-];
+const forgotPasswordValidator = () => {
+   return [
+      body("email")
+         .trim()
+         .notEmpty()
+         .withMessage("Email is required")
+         .isEmail()
+         .withMessage("Please enter a valid email"),
+   ];
+};
 
-const forgotPasswordValidator = [
-   body("email")
-      .trim()
-      .notEmpty()
-      .withMessage("Email is required")
-      .isEmail()
-      .withMessage("Please enter a valid email"),
+const resetPasswordValidator = () => {
+   return [
+      param("token").trim().notEmpty().withMessage("Reset token is required"),
 
-   validate,
-];
-
-const resetPasswordValidator = [
-   param("token").trim().notEmpty().withMessage("Reset token is required"),
-
-   body("password")
-      .trim()
-      .notEmpty()
-      .withMessage("Password is required")
-      .isLength({ min: 8 })
-      .withMessage("Password must be at least 8 character")
-      .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/)
-      .withMessage(
-         "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
-      ),
-
-   validate,
-];
+      body("password")
+         .trim()
+         .notEmpty()
+         .withMessage("Password is required")
+         .isLength({ min: 8 })
+         .withMessage("Password must be at least 8 character")
+         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d@$!%*?&]{8,}$/)
+         .withMessage(
+            "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character",
+         ),
+   ];
+};
 
 //For verification token validation
-const verifyTokenValidator = [
-   param("token")
-      .trim()
-      .notEmpty()
-      .withMessage("Verification token is required"),
-
-   validate,
-];
-
+const verifyTokenValidator = () => {
+   return [
+      param("token")
+         .trim()
+         .notEmpty()
+         .withMessage("Verification token is required"),
+   ];
+};
+const userChangeCurrentPasswordValidator = () => {
+   return [
+     body("oldPassword").notEmpty().withMessage("Old password is required"),
+     body("newPassword").notEmpty().withMessage("New password is required"),
+   ];
+ };
 export {
    userRegistrationValidator,
    loginValidator,
    forgotPasswordValidator,
    resetPasswordValidator,
    verifyTokenValidator,
+   userChangeCurrentPasswordValidator,
 };
