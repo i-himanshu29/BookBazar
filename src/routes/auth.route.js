@@ -7,7 +7,7 @@ import {
    logoutUser,
    refreshAccessToken,
    registerUser,
-   resendVerifcationEmail,
+   resendVerificationEmail,
    verifyUser,
 } from "../controllers/auth.controller.js";
 import {
@@ -24,19 +24,19 @@ const router = Router();
 router
    .route("/register")
    .post(userRegistrationValidator(), validate, registerUser);
-router.route("/login").get(loginValidator(), validate, loginUser);
+router.route("/login").post(loginValidator(), validate, loginUser);
 router.route("/verify/:token").get(verifyUser);
-router.route("/resend-mail").get(verifyJWT, resendVerifcationEmail);
+router.route("/resend-mail").get(verifyJWT,resendVerificationEmail);
 router.route("/refresh-token").post(refreshAccessToken);
 router
    .route("/forgot-password")
-   .get(verifyJWT, forgotPasswordValidator(), validate, forgotPasswordRequest);
+   .post(verifyJWT, forgotPasswordValidator(), validate, forgotPasswordRequest);
 
 router
    .route("/change-password")
-   .get(verifyJWT, userChangeCurrentPasswordValidator, changeCurrrentPassword);
+   .post(verifyJWT, userChangeCurrentPasswordValidator, changeCurrrentPassword);
 
-router.route("/getMe").get(verifyJWT, getProfile);
+router.route("/profile").get(verifyJWT, getProfile);
 router.route("/logout").get(verifyJWT, logoutUser);
 
 export default router;

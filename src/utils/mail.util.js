@@ -11,9 +11,9 @@ import nodemailer from "nodemailer";
 const sendEmail = async (options) => {
    const mailGenerator = new Mailgen({
       theme: "default",
-      products: {
-         name: "Task Manager",
-         link: "https://taskmanager.app",
+      product: {
+         name: "Book Bazar",
+         link: "https://bookbazar.com",
       },
    });
 
@@ -31,7 +31,7 @@ const sendEmail = async (options) => {
    });
 
    const mail = {
-      from: "mail.taskmanager@example.com",
+      from: "mail.bookbazar@example.com",
       to: options.email,
       subject: options.subject,
       text: emailText,
@@ -53,7 +53,6 @@ const sendEmail = async (options) => {
  * @param {string} username
  * @param {string} verificationUrl
  * @returns {Mailgen.Content}
- * @description It designs the email verification mail
  */
 
 const emailVerificationMailgenContent = (name, verificationUrl) => {
@@ -77,10 +76,9 @@ const emailVerificationMailgenContent = (name, verificationUrl) => {
 
 /**
  *
- * @param {string} username
+ * @param {string} name
  * @param {string} passwordResetUrl
  * @returns {Mailgen.Content}
- * @description It designs the forgot password mail
  */
 const forgotPasswordMailgenContent = (name, passwordResetUrl) => {
    return {
