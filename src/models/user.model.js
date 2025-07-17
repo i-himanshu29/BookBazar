@@ -35,7 +35,7 @@ const userSchema = new Schema(
          type: String,
       },
       forgotPasswordExpiry: {
-         type: String,
+         type: Date,
       },
       emailVerificationToken: {
          type: String,
