@@ -31,18 +31,7 @@ const deleteReviewValidator = () => {
    ];
 };
 
-const getBookReviewValidator = () => {
-   return [
-      param("bookId")
-         .notEmpty()
-         .withMessage("Book Id is required")
-         .isMongoId()
-         .withMessage("Invalid Book Id"),
-   ];
-};
-
 export { 
     addReviewValidator, 
     deleteReviewValidator, 
-    getBookReviewValidator 
 };

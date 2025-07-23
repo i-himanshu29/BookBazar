@@ -1,4 +1,4 @@
-import { body, query, param } from "express-validator";
+import { body } from "express-validator";
 
 const initiatePaymentValidator = () => {
    return [
@@ -50,17 +50,7 @@ const verifyPaymentValidator = () => {
    ];
 };
 
-const getUserPaymentsValidator = () => {
-   return [
-      param("userId")
-        .optional()
-        .isMongoId()
-        .withMessage("Invalid User ID"),
-   ];
-};
-
-export {
-   initiatePaymentValidator,
-   verifyPaymentValidator,
-   getUserPaymentsValidator,
+export { 
+   initiatePaymentValidator, 
+   verifyPaymentValidator 
 };
