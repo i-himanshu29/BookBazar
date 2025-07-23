@@ -26,7 +26,7 @@ router
    .post(userRegistrationValidator(), validate, registerUser);
 router.route("/login").post(loginValidator(), validate, loginUser);
 router.route("/verify/:token").get(verifyUser);
-router.route("/resend-mail").get(verifyJWT,resendVerificationEmail);
+router.route("/resend-mail").get(verifyJWT, resendVerificationEmail);
 router.route("/refresh-token").post(refreshAccessToken);
 router
    .route("/forgot-password")
@@ -34,7 +34,11 @@ router
 
 router
    .route("/change-password")
-   .post(verifyJWT, userChangeCurrentPasswordValidator, changeCurrrentPassword);
+   .post(
+      verifyJWT,
+      userChangeCurrentPasswordValidator(),
+      changeCurrrentPassword,
+   );
 
 router.route("/profile").get(verifyJWT, getProfile);
 router.route("/logout").get(verifyJWT, logoutUser);

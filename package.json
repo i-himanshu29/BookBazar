@@ -22,7 +22,8 @@
     "jsonwebtoken": "^9.0.2",
     "mailgen": "^2.0.29",
     "mongoose": "^8.16.3",
-    "nodemailer": "^7.0.5"
+    "nodemailer": "^7.0.5",
+    "razorpay": "^2.9.6"
   },
   "devDependencies": {
     "nodemon": "^3.1.10",
