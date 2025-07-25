@@ -3,7 +3,7 @@ import path from "path";
 import fs from "fs";
 
 // temp uploads folder
-const tempDir = "public";
+const tempDir = "public/images";
 if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
 
 const storage = multer.diskStorage({

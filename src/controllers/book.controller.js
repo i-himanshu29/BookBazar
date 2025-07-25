@@ -3,6 +3,8 @@ import { Book } from "../models/book.model.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
 import {uploadOnCloudinary} from "../config/cloudinary.config.js"
+import mongoose from "mongoose";
+
 const addBook = asyncHandler(async (req, res) => {
    // 1️ .Extract data from request body
    const { title, description, author, price, stock } = req.body;
@@ -65,15 +67,15 @@ const getAllBooks = asyncHandler(async (req, res) => {
 
 const getBookById = asyncHandler(async (req, res) => {
    // 1️. Get book ID from req.params
-   const { id } = req.params;
+   const { bookId } = req.params;
 
    // 2️. Validate if ID is a valid MongoDB ObjectId (optional but recommended)
-   if (!mongoose.Types.ObjectId.isValid(id)) {
+   if (!mongoose.Types.ObjectId.isValid(bookId)) {
       throw new ApiError(400, "Invalid book ID format");
    }
 
    // 3️. Fetch book from DB by ID
-   const book = await Book.findById(id);
+   const book = await Book.findById(bookId);
 
    // 4️. If no book found, throw error
    if (!book) {
