@@ -2,21 +2,19 @@ import { asyncHandler } from "../utils/async-handler.util.js";
 import { Book } from "../models/book.model.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
-
+import {uploadOnCloudinary} from "../config/cloudinary.config.js"
 const addBook = asyncHandler(async (req, res) => {
    // 1️ .Extract data from request body
-   const { title, imageUrl, description, author, price, stock } = req.body;
+   const { title, description, author, price, stock } = req.body;
 
-   // 2️.Validate all required fields
-   // if (
-   //    [title, imageUrl, description, author, price, stock].some(
-   //       (field) => field?.trim() === "",
-   //    ) ||
-   //    price === undefined ||
-   //    stock === undefined
-   // ) {
-   //    throw new ApiError(400, "All fields are required");
-   // }
+   // 2. Upload image to Cloudinary
+   const uploadResult = await uploadOnCloudinary(req.file.path);
+
+   if (!uploadResult || !uploadResult.secure_url) {
+      throw new ApiError(500, "Image upload failed");
+   }
+
+   const imageUrl = uploadResult.secure_url;
 
    // 3️. Check if the book already exists (based on title and author or other unique fields)
    const existingBook = await Book.findOne({ title, author });
@@ -34,8 +32,8 @@ const addBook = asyncHandler(async (req, res) => {
       imageUrl,
       description,
       author,
-      price,
-      stock,
+      price:parseFloat(price),
+      stock:parseInt(stock, 10),
    });
 
    // 5.return success response

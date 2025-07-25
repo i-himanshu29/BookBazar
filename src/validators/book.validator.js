@@ -32,21 +32,19 @@ const addBookValidator = () => {
       body("price")
          .notEmpty()
          .withMessage("Price is required")
-         .isFloat({ gt: 0 })
-         .withMessage("Price must be a positive number"),
-
+         .custom((value) => {
+            const num = parseFloat(value);
+            if (isNaN(num)) throw new Error("Price must be a valid number");
+            return true;
+         }),
       body("stock")
          .notEmpty()
          .withMessage("Stock is required")
-         .isInt({ min: 0 })
-         .withMessage("Stock must be a non-negative integer"),
-
-      body("imageUrl")
-         .trim()
-         .notEmpty()
-         .withMessage("Image URL is required")
-         .isURL()
-         .withMessage("Image URL must be a valid URL"),
+         .custom((value) => {
+            const num = parseInt(value, 10);
+            if (isNaN(num) || num < 0) throw new Error("Stock must be a non-negative integer");
+            return true;
+         }),
    ];
 };
 
