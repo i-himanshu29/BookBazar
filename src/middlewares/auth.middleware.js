@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import db from "../config/dbconnect.config.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { asyncHandler } from "../utils/async-handler.util.js";
 import { User } from "../models/user.model.js";
@@ -28,18 +29,24 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
 
 export const checkAdmin = asyncHandler(async (req, res, next) => {
    try {
-      const userId = req.user.id;
+      // const userId = req.user.id;
+      const user = await User.findById(req.user.id).select("role");
+      if (!req.user || !req.user.id) {
+         return res.status(401).json({ message: "Unauthorized - user not found" });
+      }
+   
+    
+   
+      // const user = await db.user.findUnique({
+      //    where: {
+      //       id: userId,
+      //    },
+      //    select: {
+      //       role: true,
+      //    },
+      // });
 
-      const user = await db.user.findUnique({
-         where: {
-            id: userId,
-         },
-         select: {
-            role: true,
-         },
-      });
-
-      if (!user || user.role !== "ADMIN") {
+      if (!user || user.role !== "admin") {
          return res.status(403).json({
             message: "Access denied - Admins only",
          });

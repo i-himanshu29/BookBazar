@@ -8,20 +8,24 @@ const addBook = asyncHandler(async (req, res) => {
    const { title, imageUrl, description, author, price, stock } = req.body;
 
    // 2️.Validate all required fields
-   if (
-      [title, imageUrl, description, author, price, stock].some(
-         (field) => field?.trim() === "",
-      ) ||
-      price === undefined ||
-      stock === undefined
-   ) {
-      throw new ApiError(400, "All fields are required");
-   }
+   // if (
+   //    [title, imageUrl, description, author, price, stock].some(
+   //       (field) => field?.trim() === "",
+   //    ) ||
+   //    price === undefined ||
+   //    stock === undefined
+   // ) {
+   //    throw new ApiError(400, "All fields are required");
+   // }
 
    // 3️. Check if the book already exists (based on title and author or other unique fields)
    const existingBook = await Book.findOne({ title, author });
    if (existingBook) {
-      return res.status(400).json({ message: "Book already exists" });
+      // return res.status(400).json({ message: "Book already exists" });
+      throw new ApiError(
+         400,
+         "Book already exists",
+      );
    }
 
    // 4️ .Create and save the new book in DB

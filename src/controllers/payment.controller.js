@@ -5,10 +5,10 @@ import { Payment } from "../models/payment.model.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
 
-const razorpay = new Razorpay({
-   key_id: process.env.RAZORPAY_KEY_ID,
-   key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+// const razorpay = new Razorpay({
+//    key_id: process.env.RAZORPAY_KEY_ID,
+//    key_secret: process.env.RAZORPAY_KEY_SECRET,
+// });
 
 const initiatePayment = asyncHandler(async (req, res) => {
    // 1️. Extract user & cart/order/payment details from req.body or req.user

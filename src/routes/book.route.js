@@ -10,12 +10,12 @@ import {
    getBookById,
    updateBook,
 } from "../controllers/book.controller.js";
-import { checkAdmin } from "../middlewares/auth.middleware.js";
+import { checkAdmin , verifyJWT } from "../middlewares/auth.middleware.js";
 import { validate } from "../middlewares/validator.middleware.js";
 
 const router = Router();
 
-router.route("/").post(addBookValidator(), validate, checkAdmin, addBook);
+router.route("/add-book").post(addBookValidator(), validate,verifyJWT, checkAdmin, addBook);
 router.route("/").get(getAllBooks);
 router.route("/:bookId").get(getBookById);
 router
