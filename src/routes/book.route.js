@@ -20,16 +20,22 @@ router.post(
    "/add-book",
    verifyJWT,
    checkAdmin,
-   upload.single("image"), 
-   addBookValidator(), 
+   upload.single("image"),
+   addBookValidator(),
    validate,
    addBook,
 );
 router.route("/").get(getAllBooks);
 router.route("/:bookId").get(getBookById);
-router
-   .route("/:bookId")
-   .patch(updateBookValidator(), validate, checkAdmin, updateBook);
-router.route("/:bookId").delete(checkAdmin, deleteBook);
+router.patch(
+   "/:bookId",
+   verifyJWT,
+   checkAdmin,
+   upload.single("image"),
+   updateBookValidator(),
+   validate,
+   updateBook,
+);
+router.route("/:bookId").delete(verifyJWT , checkAdmin, deleteBook);
 
 export default router;

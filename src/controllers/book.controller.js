@@ -90,10 +90,10 @@ const getBookById = asyncHandler(async (req, res) => {
 
 const updateBook = asyncHandler(async (req, res) => {
    // 1️. Extract book ID from req.params
-   const { id } = req.params;
+   const { bookId  } = req.params;
 
    // 2️. Validate book ID format
-   if (!mongoose.Types.ObjectId.isValid(id)) {
+   if (!mongoose.Types.ObjectId.isValid(bookId )) {
       throw new ApiError(400, "Invalid book ID");
    }
 
@@ -112,7 +112,7 @@ const updateBook = asyncHandler(async (req, res) => {
 
    // 5️. Find and update the book in DB
    const updatedBook = await Book.findByIdAndUpdate(
-      id,
+      bookId,
       { title, imageUrl, description, author, price, stock },
       { new: true, runValidators: true },
    );
@@ -130,21 +130,21 @@ const updateBook = asyncHandler(async (req, res) => {
 
 const deleteBook = asyncHandler(async (req, res) => {
    // 1️. Extract book ID from req.params
-   const { id } = req.params;
+   const { bookId } = req.params;
 
    // 2️. Validate the book ID format
-   if (!mongoose.Types.ObjectId.isValid(id)) {
+   if (!mongoose.Types.ObjectId.isValid(bookId)) {
       throw new ApiError(400, "Invalid Book ID");
    }
 
    // 3️. Check if book exists
-   const existingBook = await Book.findById(id);
+   const existingBook = await Book.findById(bookId);
    if (!existingBook) {
       throw new ApiError(404, "Book not found");
    }
 
    // 4️. Delete the book
-   await Book.findByIdAndDelete(id);
+   await Book.findByIdAndDelete(bookId);
 
    // 5️. Return success response
    return res

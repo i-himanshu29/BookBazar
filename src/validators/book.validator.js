@@ -42,7 +42,8 @@ const addBookValidator = () => {
          .withMessage("Stock is required")
          .custom((value) => {
             const num = parseInt(value, 10);
-            if (isNaN(num) || num < 0) throw new Error("Stock must be a non-negative integer");
+            if (isNaN(num) || num < 0)
+               throw new Error("Stock must be a non-negative integer");
             return true;
          }),
    ];
@@ -66,13 +67,29 @@ const updateBookValidator = () => {
          .withMessage("Description should be at least 8 characters long")
          .isLength({ max: 500 })
          .withMessage("Description cannot exceed 500 characters"),
-      body("imageUrl")
+      body("author")
+         .optional()
          .trim()
-         .notEmpty()
-         .withMessage("Image URL is required")
-         .isURL()
-         .withMessage("Image URL must be a valid URL"),
+         .isLength({ min: 2 })
+         .withMessage("Author name should be at least 2 characters")
+         .isLength({ max: 50 })
+         .withMessage("Author name cannot exceed 50 characters"),
+      body("price")
+         .optional()
+         .custom((value) => {
+            const num = parseFloat(value);
+            if (isNaN(num)) throw new Error("Price must be a valid number");
+            return true;
+         }),
+      body("stock")
+         .optional()
+         .custom((value) => {
+            const num = parseInt(value, 10);
+            if (isNaN(num) || num < 0)
+               throw new Error("Stock must be a non-negative integer");
+            return true;
+         }),
    ];
 };
 
-export { addBookValidator ,updateBookValidator};
+export { addBookValidator, updateBookValidator };
