@@ -2,11 +2,11 @@ import { body, param } from "express-validator";
 
 const addReviewValidator = () => {
    return [
-      body("bookId")
+      param("bookId")
          .notEmpty()
-         .withMessage("Book Id is required")
+         .withMessage("Book ID is required")
          .isMongoId()
-         .withMessage("Invalid Book Id"),
+         .withMessage("Invalid Book ID"),
       body("rating")
          .notEmpty()
          .withMessage("Rating is required")

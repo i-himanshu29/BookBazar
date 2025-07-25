@@ -9,12 +9,15 @@ import {
    deleteReview,
    getBookReview,
 } from "../controllers/review.controller.js";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.route("/:bookId").post(addReviewValidator(), validate, addReview);
-router.route("/:bookId").get(getBookReview);
+router
+   .route("/add-review/:bookId")
+   .post(verifyJWT, addReviewValidator(), validate, addReview);
+router.route("/:bookId").get(verifyJWT , getBookReview);
 router
    .route("/:reviewId")
-   .delete(deleteReviewValidator(), validate, deleteReview);
+   .delete(verifyJWT , deleteReviewValidator(), validate, deleteReview);
 export default router;

@@ -6,7 +6,8 @@ import { ApiResponse } from "../utils/api-response.util.js";
 const addReview = asyncHandler(async (req, res) => {
    // 1️. Get userId from req.user and bookId, rating, comment from req.body
    const userId = req.user.id;
-   const { bookId, rating, comment } = req.body;
+   const { rating, comment } = req.body;
+   const {bookId} = req.params;
 
    // 2️. Validate input (ensure bookId and rating are present)
    if (!bookId || !rating) {
@@ -21,8 +22,8 @@ const addReview = asyncHandler(async (req, res) => {
 
    // 4️. Save the new review in the database
    const review = await Review.create({
-      user: userId,
-      book: bookId,
+      userId: userId,
+      bookId: bookId,
       rating,
       comment,
    });
@@ -43,10 +44,10 @@ const getBookReview = asyncHandler(async (req, res) => {
    }
 
    // 3️. Fetch all reviews for the book from DB
-   const reviews = await Review.find({ book: bookId })
-      .populate("user", "username") // Optional: populate user info
+   const reviews = await Review.find({bookId })
+      .populate("userId", "name") // Optional: populate user info
       .sort({ createdAt: -1 });
-
+      console.log("reviews:", reviews);
    // 4️. Return response (even if empty)
    return res
       .status(200)
