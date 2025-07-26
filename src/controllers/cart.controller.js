@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/async-handler.util.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
 import { Cart } from "../models/cartItem.model.js";
-import {Book} from "../models/book.model.js"
+import { Book } from "../models/book.model.js";
 import mongoose from "mongoose";
 
 const addToCart = asyncHandler(async (req, res) => {
@@ -27,20 +27,23 @@ const addToCart = asyncHandler(async (req, res) => {
    }
 
    // 6️. Check if item already exists in cart → update quantity if yes
-   const existingCartItem = await Cart.findOne({ userId: userId, bookId: bookId });
+   const existingCartItem = await Cart.findOne({
+      userId: userId,
+      bookId: bookId,
+   });
 
    let cartItem;
 
-if (existingCartItem) {
-   existingCartItem.quantity += quantity;
-   cartItem = await existingCartItem.save();
-} else {
-   cartItem = await Cart.create({
-      userId: userId,
-      bookId: bookId,
-      quantity,
-   });
-}
+   if (existingCartItem) {
+      existingCartItem.quantity += quantity;
+      cartItem = await existingCartItem.save();
+   } else {
+      cartItem = await Cart.create({
+         userId: userId,
+         bookId: bookId,
+         quantity,
+      });
+   }
 
    // 8️. Return success response
    return res
@@ -53,7 +56,7 @@ const getCartItems = asyncHandler(async (req, res) => {
    const userId = req.user.id;
 
    // 2️. Query the cart collection to find items for the user
-   const cartItems = await Cart.find({ user: userId }).populate("book");
+   const cartItems = await Cart.find({ userId }).populate("bookId");
 
    // 3️. If no items found, return an appropriate message
    if (!cartItems || cartItems.length === 0) {
@@ -75,12 +78,25 @@ const removeFromCart = asyncHandler(async (req, res) => {
    // 2️. Get user ID from authenticated request
    const userId = req.user.id;
 
-   // 3️. Find the cart item and check if it belongs to the user
-   const cartItem = await Cart.findOne({ _id: cartItemId, user: userId });
+   console.log(
+      "Attempting to remove cart item:",
+      cartItemId,
+      "for user:",
+      userId,
+   );
 
-   if (!cartItem) {
-      throw new ApiError(404, "Cart item not found or unauthorized");
+   // Check if ID is valid
+   if (!mongoose.Types.ObjectId.isValid(cartItemId)) {
+      throw new ApiError(400, "Invalid cart item ID");
    }
+
+   // Check if cart item exists at all
+   // const rawCartItem = await Cart.findById(cartItemId);
+   // console.log("Cart item without user check:", rawCartItem);
+
+   // if (!rawCartItem) {
+   //    throw new ApiError(404, "Cart item does not exist");
+   // }
 
    // 4️. Remove the cart item from the database
    await Cart.findByIdAndDelete(cartItemId);
@@ -91,39 +107,4 @@ const removeFromCart = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, null, "Item removed from cart successfully"));
 });
 
-const updateCartItemQuantity = asyncHandler(async (req, res) => {
-   // 1️. Extract cart item ID and new quantity from req.body
-   const { cartItemId, quantity } = req.body;
-
-   // 2️. Basic validation
-   if (!cartItemId || typeof quantity !== "number" || quantity < 1) {
-      throw new ApiError(400, "Valid cartItemId and quantity are required");
-   }
-
-   // 3️. Get user ID from the authenticated request
-   const userId = req.user.id;
-
-   // 4️. Check if the cart item exists and belongs to the user
-   const cartItem = await Cart.findOne({ _id: cartItemId, user: userId });
-
-   if (!cartItem) {
-      throw new ApiError(404, "Cart item not found or unauthorized");
-   }
-
-   // 5️. Update the quantity in the database
-   cartItem.quantity = quantity;
-   await cartItem.save();
-
-   // 6️. Return a success response
-   return res
-      .status(200)
-      .json(
-         new ApiResponse(
-            200,
-            cartItem,
-            "Cart item quantity updated successfully",
-         ),
-      );
-});
-
-export { addToCart, getCartItems, removeFromCart, updateCartItemQuantity };
+export { addToCart, getCartItems, removeFromCart};
