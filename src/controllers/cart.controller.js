@@ -3,6 +3,7 @@ import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
 import { Cart } from "../models/cartItem.model.js";
 import {Book} from "../models/book.model.js"
+import mongoose from "mongoose";
 
 const addToCart = asyncHandler(async (req, res) => {
    // 1️. Get book ID from req.params
@@ -26,24 +27,25 @@ const addToCart = asyncHandler(async (req, res) => {
    }
 
    // 6️. Check if item already exists in cart → update quantity if yes
-   const existingCartItem = await Cart.findOne({ user: userId, book: bookId });
+   const existingCartItem = await Cart.findOne({ userId: userId, bookId: bookId });
 
-   if (existingCartItem) {
-      existingCartItem.quantity += quantity;
-      await existingCartItem.save();
-   } else {
-      // 7️. Create new cart item if not already in cart
-      await Cart.create({
-         user: userId,
-         book: bookId,
-         quantity,
-      });
-   }
+   let cartItem;
+
+if (existingCartItem) {
+   existingCartItem.quantity += quantity;
+   cartItem = await existingCartItem.save();
+} else {
+   cartItem = await Cart.create({
+      userId: userId,
+      bookId: bookId,
+      quantity,
+   });
+}
 
    // 8️. Return success response
    return res
       .status(201)
-      .json(new ApiResponse(200, null, "Item added to cart successfully"));
+      .json(new ApiResponse(200, cartItem, "Item added to cart successfully"));
 });
 
 const getCartItems = asyncHandler(async (req, res) => {

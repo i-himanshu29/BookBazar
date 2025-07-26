@@ -1,16 +1,15 @@
-import { body } from "express-validator";
+import { body,param } from "express-validator";
 
 const addToCartValidator = () => {
    return [
-      body("bookId")
+      param("bookId")
          .notEmpty()
          .withMessage("Book ID is required")
          .isMongoId()
          .withMessage("Invalid Book ID"),
 
       body("quantity")
-         .notEmpty()
-         .withMessage("Quantity is required")
+         .optional()
          .isInt({ min: 1 })
          .withMessage("Quantity must be at least 1"),
    ];
