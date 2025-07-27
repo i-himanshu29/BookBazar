@@ -13,14 +13,20 @@ import {
    updateAddress,
 } from "../controllers/address.controller.js";
 import { validate } from "../middlewares/validator.middleware.js";
+import {verifyJWT} from "../middlewares/auth.middleware.js"
+
 
 const router = Router();
 
-router.route("/").post(addAddressValidator(), validate, addAddress);
-router.route("/").get(getUserAddress);
+router
+   .route("/add-address")
+   .post(verifyJWT , addAddressValidator(), addAddress); // if you don't use validate then it is working perfectlly
+router
+   .route("/")
+   .get(verifyJWT , getUserAddress);
 router
    .route("/:addressId")
-   .patch(updateAddressValidator(), validate, updateAddress);
+   .patch(verifyJWT , updateAddressValidator(), validate, updateAddress);
 router
    .route("/:addressId")
    .delete(deleteAddressValidator(), validate, deleteAddress);

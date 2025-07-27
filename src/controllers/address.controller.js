@@ -5,22 +5,23 @@ import { ApiResponse } from "../utils/api-response.util.js";
 
 const addAddress = asyncHandler(async (req, res) => {
    // 1️. Extract data from body
-   const { street, city, state, country, zipCode, phone } = req.body;
+   const {fullName , street, city, state, country, postalCode, phone } = req.body;
    const userId = req.user.id;
 
    // 2️. Validate required fields
-   if (![street, city, state, country, zipCode, phone].every(Boolean)) {
+   if (![fullName , street, city, state, country, postalCode, phone].every(Boolean)) {
       throw new ApiError(400, "All address fields are required");
    }
 
    // 3️. Optional: Check for existing duplicate address for the same user
    const existingAddress = await Address.findOne({
-      user: userId,
+      userId,
+      fullName,
       street,
       city,
       state,
       country,
-      zipCode,
+      postalCode,
       phone,
    });
 
@@ -30,12 +31,13 @@ const addAddress = asyncHandler(async (req, res) => {
 
    // 4️. Save to DB
    const address = await Address.create({
-      user: userId,
+      userId,
+      fullName,
       street,
       city,
       state,
       country,
-      zipCode,
+      postalCode,
       phone,
    });
 
@@ -49,7 +51,7 @@ const getUserAddress = asyncHandler(async (req, res) => {
    const userId = req.user.id; // secure, from auth middleware
 
    // Get all addresses associated with the user
-   const addresses = await Address.find({ user: userId });
+   const addresses = await Address.find({userId });
 
    if (!addresses || addresses.length === 0) {
       throw new ApiError(404, "No addresses found for this user");

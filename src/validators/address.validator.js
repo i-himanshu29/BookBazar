@@ -8,7 +8,7 @@ const addAddressValidator = () => {
          .trim()
          .notEmpty()
          .withMessage("Phone number is required")
-         .isMobilePhone()
+         .isMobilePhone("any")
          .withMessage("Invalid phone number"),
 
       body("street")
@@ -24,7 +24,7 @@ const addAddressValidator = () => {
          .trim()
          .notEmpty()
          .withMessage("Postal code is required")
-         .isPostalCode("any")
+         .isPostalCode("IN")
          .withMessage("Invalid postal code"),
 
       body("country").trim().notEmpty().withMessage("Country is required"),
