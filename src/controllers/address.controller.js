@@ -65,12 +65,12 @@ const getUserAddress = asyncHandler(async (req, res) => {
 });
 
 const updateAddress = asyncHandler(async (req, res) => {
-   const addressId = req.params.id;
+   const {addressId} = req.params;
    const userId = req.user.id;
    const updateData = req.body;
 
    // Check if the address exists and belongs to the user
-   const address = await Address.findOne({ _id: addressId, user: userId });
+   const address = await Address.findOne({ _id: addressId,userId });
 
    if (!address) {
       throw new ApiError(404, "Address not found or not authorized");
@@ -91,10 +91,10 @@ const updateAddress = asyncHandler(async (req, res) => {
 });
 
 const deleteAddress = asyncHandler(async (req, res) => {
-   const addressId = req.params.id;
+   const {addressId} = req.params;
    const userId = req.user.id;
 
-   const address = await Address.findOne({ _id: addressId, user: userId });
+   const address = await Address.findOne({ _id: addressId,userId });
 
    if (!address) {
       throw new ApiError(404, "Address not found or not authorized to delete");
@@ -107,35 +107,9 @@ const deleteAddress = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, null, "Address deleted successfully"));
 });
 
-const setDefaultAddress = asyncHandler(async (req, res) => {
-   const addressId = req.params.id;
-   const userId = req.user.id;
-
-   const address = await Address.findOne({ _id: addressId, user: userId });
-
-   if (!address) {
-      throw new ApiError(404, "Address not found or not authorized");
-   }
-
-   // Unset all other addresses marked as default
-   await Address.updateMany(
-      { user: userId, isDefault: true },
-      { $set: { isDefault: false } },
-   );
-
-   // Set this address as default
-   address.isDefault = true;
-   await address.save();
-
-   return res
-      .status(200)
-      .json(new ApiResponse(200, address, "Default address set successfully"));
-});
-
 export {
    addAddress,
    getUserAddress,
    updateAddress,
    deleteAddress,
-   setDefaultAddress,
 };

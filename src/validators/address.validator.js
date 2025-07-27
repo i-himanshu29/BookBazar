@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body,param} from "express-validator";
 
 const addAddressValidator = () => {
    return [
@@ -36,49 +36,20 @@ const addAddressValidator = () => {
    ];
 };
 
-const updateAddressValidator = () => {
-   return [
-      param("addressId")
-         .notEmpty()
-         .withMessage("Address ID is required")
-         .isMongoId()
-         .withMessage("Invalid Address ID"),
-
-      // You can reuse the same checks from addAddressValidator here as optional fields
-      body("fullName").optional().isString(),
-      body("phone").optional().isMobilePhone(),
-      body("street").optional().isString(),
-      body("city").optional().isString(),
-      body("state").optional().isString(),
-      body("postalCode").optional().isPostalCode("any"),
-      body("country").optional().isString(),
-      body("isDefault").optional().isBoolean(),
-   ];
-};
-
-const deleteAddressValidator = () => {
-   return [
-      param("addressId")
-         .notEmpty()
-         .withMessage("Address ID is required")
-         .isMongoId()
-         .withMessage("Invalid Address ID"),
-   ];
-};
-
-const setDefaultAddressValidator = () => {
-   return [
-      param("addressId")
-         .notEmpty()
-         .withMessage("Address ID is required")
-         .isMongoId()
-         .withMessage("Invalid Address ID"),
-   ];
-};
+// const updateAddressValidator = () => {
+//    return [
+//       body("fullName").optional().isString(),
+//       body("phone").optional().isMobilePhone(),
+//       body("street").optional().isString(),
+//       body("city").optional().isString(),
+//       body("state").optional().isString(),
+//       body("postalCode").optional().isPostalCode("any"),
+//       body("country").optional().isString(),
+//       body("isDefault").optional().isBoolean(),
+//    ];
+// };
 
 export {
    addAddressValidator,
-   updateAddressValidator,
-   deleteAddressValidator,
-   setDefaultAddressValidator,
+   // updateAddressValidator,
 };
