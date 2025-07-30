@@ -2,6 +2,7 @@ import { asyncHandler } from "../utils/async-handler.util.js";
 import { Order } from "../models/order.model.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
+import { Cart } from "../models/cartItem.model.js";
 
 const createOrder = asyncHandler(async (req, res) => {
    // 1️. Extract data from req.body (e.g. items, shippingAddress, payment info)
@@ -14,9 +15,10 @@ const createOrder = asyncHandler(async (req, res) => {
 
    // 3️. Get the user ID from the request (assumes auth middleware ran)
    const userId = req.user.id;
-
+   console.log("userId:",userId);
    // 4️. Optionally verify items exist in the user's cart (optional if frontend sends item info directly)
-   const cartItems = await Cart.find({ user: userId });
+   const cartItems = await Cart.find({userId });
+   console.log("cartItems:",cartItems);
    if (!cartItems || cartItems.length === 0) {
       throw new ApiError(400, "No items in cart to place an order");
    }
@@ -27,18 +29,21 @@ const createOrder = asyncHandler(async (req, res) => {
       0,
    );
 
+   console.log("totalPrice:",totalPrice);
+
    // 6️. Create order document
    const order = await Order.create({
-      user: userId,
-      items: cartItems,
+      userId: userId,
+      cartItems: cartItems,
       shippingAddress,
       paymentMethod,
       totalPrice,
-      status: "PLACED", // default status
+      // status: "PLACED", // default status
    });
 
+   console.log("order:",order);
    // 7️. Clear the user's cart (optional but common)
-   await Cart.deleteMany({ user: userId });
+   await Cart.deleteMany({ userId: userId });
 
    // 8️. Return success response
    return res

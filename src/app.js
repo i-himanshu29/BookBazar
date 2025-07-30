@@ -35,7 +35,7 @@ app.use("/api/v1/healthcheck", healthCheckRouter);
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/book", bookRouter);
 app.use("/api/v1/cart", cartRouter);
-app.use("/api/v1/orders", orderRouter);
+app.use("/api/v1/order", orderRouter);
 app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/address", addressRouter);
 app.use("/api/v1/payment", paymentRouter);

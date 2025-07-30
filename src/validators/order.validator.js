@@ -14,7 +14,7 @@ const createOrderValidator = () => {
          .isInt({ min: 1 })
          .withMessage("Quantity must be atleast 1"),
       body("shippingAddress")
-         .isEmpty()
+         .notEmpty()
          .withMessage("Shipping Address is required")
          .isMongoId()
          .withMessage("Invalid address Id"),

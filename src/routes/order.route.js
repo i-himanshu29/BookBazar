@@ -5,7 +5,7 @@ import {
    updateOrderStatusValidator,
 } from "../validators/order.validator.js";
 import { validate } from "../middlewares/validator.middleware.js";
-import { checkAdmin } from "../middlewares/auth.middleware.js";
+import { checkAdmin,verifyJWT } from "../middlewares/auth.middleware.js";
 import {
    cancelOrder,
    createOrder,
@@ -18,11 +18,21 @@ import {
 
 const router = Router();
 
-router.route("/create").post(createOrderValidator(), validate, createOrder);
-router.route("/user").get(getUsersOrder);
-router.route("/:orderId").get(validate, getOrderById);
-router.route("/").get(checkAdmin, getAllOrders);
-router.route("/status/:orderId").get(getOrderStatus);
+router
+   .route("/create")
+   .post(verifyJWT , createOrderValidator(), validate, createOrder);
+router
+   .route("/user")
+   .get(getUsersOrder);
+router
+   .route("/:orderId")
+   .get(validate, getOrderById);
+router
+   .route("/")
+   .get(checkAdmin, getAllOrders);
+router
+   .route("/status/:orderId")
+   .get(getOrderStatus);
 router
    .route("/status/:orderId")
    .patch(
