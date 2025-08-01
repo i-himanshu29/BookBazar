@@ -70,7 +70,7 @@ const getUsersOrder = asyncHandler(async (req, res) => {
    const userId = req.user.id;
 
    // 2️. Fetch all orders placed by this user
-   const orders = await Order.find({ user: userId });
+   const orders = await Order.find({userId });
 
    // 3️. Check if any orders exist
    if (!orders || orders.length === 0) {
@@ -89,11 +89,11 @@ const getOrderById = asyncHandler(async (req, res) => {
    // 3️. If not found, throw an ApiError (404 Not Found)
    // 4️. If found, return success response with order data
 
-   const { id } = req.params;
+   const { orderId } = req.params;
 
-   const order = await Order.findById(id)
-      .populate("userId", "username email")
-      .populate("items.book");
+   const order = await Order.findById(orderId)
+      .populate("userId", "fullname email")
+      .populate("items.bookId");
 
    if (!order) {
       throw new ApiError(404, "Order not found");
@@ -110,8 +110,8 @@ const getAllOrders = asyncHandler(async (req, res) => {
    // 3️. If found, return a success response with order data
 
    const orders = await Order.find()
-      .populate("userId", "username email")
-      .populate("items.book");
+      .populate("userId", "fullname email")
+      .populate("items.bookId");
 
    if (!orders || orders.length === 0) {
       throw new ApiError(404, "No orders found");

@@ -23,13 +23,13 @@ router
    .post(verifyJWT , createOrderValidator(), validate, createOrder);
 router
    .route("/user")
-   .get(getUsersOrder);
+   .get(verifyJWT , getUsersOrder);
 router
    .route("/:orderId")
-   .get(validate, getOrderById);
+   .get(verifyJWT , getOrderById);
 router
    .route("/")
-   .get(checkAdmin, getAllOrders);
+   .get(verifyJWT , checkAdmin, getAllOrders);
 router
    .route("/status/:orderId")
    .get(getOrderStatus);
