@@ -16,11 +16,15 @@ const router = Router();
 
 router
    .route("/initiate")
-   .post(initiatePaymentValidator(), validate, verifyJWT, initiatePayment);
+   .post(verifyJWT , initiatePayment);// initiatePaymentValidator(), validate,
 router
    .route("/verify")
    .post(verifyPaymentValidator(), validate, verifyJWT, verifyPayment);
-router.route("/user").get(getUserPayments);
-router.route("/get-all-payment").get(checkAdmin, getAllPayment);
+router
+   .route("/user")
+   .get(getUserPayments);
+router
+   .route("/get-all-payment")
+   .get(checkAdmin, getAllPayment);
 
 export default router;

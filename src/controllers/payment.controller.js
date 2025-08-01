@@ -5,10 +5,10 @@ import { Payment } from "../models/payment.model.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
 
-// const razorpay = new Razorpay({
-//    key_id: process.env.RAZORPAY_KEY_ID,
-//    key_secret: process.env.RAZORPAY_KEY_SECRET,
-// });
+const razorpay = new Razorpay({
+   key_id: process.env.RAZORPAY_KEY_ID,
+   key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
 
 const initiatePayment = asyncHandler(async (req, res) => {
    // 1️. Extract user & cart/order/payment details from req.body or req.user
@@ -17,33 +17,36 @@ const initiatePayment = asyncHandler(async (req, res) => {
    // 4️. Save the payment details (temporary status) in DB if needed
    // 5️. Return the payment gateway's response to frontend
 
-   const { amount, currency = "INR", receipt } = req.body;
+   const { amount, currency = "INR", orderId , method , providerReferenceId } = req.body;
    const userId = req.user._id;
-
-   if (!amount || !receipt) {
+   console.log(userId);
+   if (!amount || !orderId || !method || !providerReferenceId) {
       throw new ApiError(400, "Amount and receipt are required");
    }
 
    const options = {
       amount: amount * 100, // Razorpay expects amount in paisa
       currency,
-      receipt,
+      receipt : providerReferenceId,
    };
-
-   const order = await razorpay.orders.create(options);
-
+   console.log(options);
+   const razorpayOrder = await razorpay.orders.create(options);
+   console.log(razorpayOrder);
    // Optionally store in DB
-   await Payment.create({
-      user: userId,
-      orderId: order.id,
+   const payment = await Payment.create({
+      userId,
+      orderId,
       amount,
       currency,
+      method,
       status: "created",
+      providerReferenceId,
    });
 
+   console.log(payment);
    return res
       .status(201)
-      .json(new ApiResponse(201, order, "Payment initiated successfully"));
+      .json(new ApiResponse(201, {razorpayOrder , payment}, "Payment initiated successfully"));
 });
 
 const verifyPayment = asyncHandler(async (req, res) => {
