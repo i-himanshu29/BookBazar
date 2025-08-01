@@ -3,6 +3,7 @@ import { Order } from "../models/order.model.js";
 import { ApiError } from "../utils/api-error.util.js";
 import { ApiResponse } from "../utils/api-response.util.js";
 import { Cart } from "../models/cartItem.model.js";
+import { Book } from "../models/book.model.js";
 
 const createOrder = asyncHandler(async (req, res) => {
    // 1️. Extract data from req.body (e.g. items, shippingAddress, payment info)

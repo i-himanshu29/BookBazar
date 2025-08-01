@@ -44,6 +44,6 @@ router
    );
 router
    .route("/cancel/:orderId")
-   .patch(cancelOrderValidator(), validate, cancelOrder);
+   .patch(verifyJWT , cancelOrderValidator(), validate, cancelOrder);
 
 export default router;
