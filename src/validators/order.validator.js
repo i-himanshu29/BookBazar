@@ -16,20 +16,20 @@ const createOrderValidator = () => {
    ];
 };
 
-const updateOrderStatusValidator = () => {
-   return [
-      param("OrderId")
-         .notEmpty()
-         .withMessage("Order Id is required")
-         .isMongoId()
-         .withMessage("Invalid order ID"),
-      body("status")
-         .notEmpty()
-         .withMessage("Order status is required")
-         .isInt(["pending", "paid", "shipped", "cancelled"])
-         .withMessage("Invalid order status"),
-   ];
-};
+// const updateOrderStatusValidator = () => {
+//    return [
+//       param("orderId")
+//          .notEmpty()
+//          .withMessage("Order Id is required")
+//          .isMongoId()
+//          .withMessage("Invalid order ID"),
+//       body("status")
+//          .notEmpty()
+//          .withMessage("Order status is required")
+//          .isInt(["pending", "paid", "shipped", "cancelled","delivered"])
+//          .withMessage("Invalid order status"),
+//    ];
+// };
 
 const cancelOrderValidator = () => {
    return [
@@ -41,19 +41,19 @@ const cancelOrderValidator = () => {
    ];
 };
 
-const getOrderByIdValidator = () => {
-   return [
-      param("orderId")
-         .notEmpty()
-         .withMessage("Order Id is required")
-         .isMongoId()
-         .withMessage("Invalid order Id"),
-   ];
-};
+// const getOrderByIdValidator = () => {
+//    return [
+//       param("orderId")
+//          .notEmpty()
+//          .withMessage("Order Id is required")
+//          .isMongoId()
+//          .withMessage("Invalid order Id"),
+//    ];
+// };
 
 export {
    createOrderValidator,
-   updateOrderStatusValidator,
+   // updateOrderStatusValidator,
    cancelOrderValidator,
-   getOrderByIdValidator,
+   // getOrderByIdValidator,
 };

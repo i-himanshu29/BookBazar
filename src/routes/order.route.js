@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
    cancelOrderValidator,
    createOrderValidator,
-   updateOrderStatusValidator,
+   // updateOrderStatusValidator,
 } from "../validators/order.validator.js";
 import { validate } from "../middlewares/validator.middleware.js";
 import { checkAdmin,verifyJWT } from "../middlewares/auth.middleware.js";
@@ -36,8 +36,9 @@ router
 router
    .route("/status/:orderId")
    .patch(
-      updateOrderStatusValidator(),
-      validate,
+      verifyJWT,
+      // updateOrderStatusValidator(),
+      // validate,
       checkAdmin,
       updateOrderStatus,
    );
