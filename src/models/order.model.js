@@ -48,6 +48,11 @@ const orderSchema = new Schema(
       ref: "Address",
       required: true,
     },
+    paymentMethod: {
+      type: String,
+      enum: ["cod", "card", "upi"], // example
+      required: true,
+    },    
   },
   {
     timestamps: true,

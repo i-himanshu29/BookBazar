@@ -6,42 +6,56 @@ import { Cart } from "../models/cartItem.model.js";
 
 const createOrder = asyncHandler(async (req, res) => {
    // 1️. Extract data from req.body (e.g. items, shippingAddress, payment info)
-   const { items, shippingAddress, paymentMethod } = req.body;
+   const {shippingAddress, paymentMethod } = req.body;
 
    // 2. Validate required fields
-   if (!items || items.length === 0 || !shippingAddress || !paymentMethod) {
+   if ( !shippingAddress || !paymentMethod) {
       throw new ApiError(400, "Missing order details");
    }
 
    // 3️. Get the user ID from the request (assumes auth middleware ran)
    const userId = req.user.id;
-   console.log("userId:",userId);
+   console.log("userId:", userId);
    // 4️. Optionally verify items exist in the user's cart (optional if frontend sends item info directly)
-   const cartItems = await Cart.find({userId });
-   console.log("cartItems:",cartItems);
+   const cartItems = await Cart.find({ userId }).populate("bookId");
+   console.log("cartItems:", cartItems);
    if (!cartItems || cartItems.length === 0) {
       throw new ApiError(400, "No items in cart to place an order");
    }
 
-   // 5️. Calculate total price
-   const totalPrice = cartItems.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0,
-   );
+   let totalPrice = 0;
+   const orderItems = cartItems.map((item) => {
+      if (!item.bookId || !item.bookId.title || !item.bookId.price) {
+         throw new ApiError(400, "Invalid book data in cart item");
+      }
 
-   console.log("totalPrice:",totalPrice);
+      const price = item.bookId.price;
+      const title = item.bookId.title;
+      const quantity = item.quantity;
+
+      totalPrice += price * quantity;
+
+      return {
+         bookId: item.bookId._id,
+         title,
+         quantity,
+         price,
+      };
+   });
+
+   console.log("totalPrice:", totalPrice);
 
    // 6️. Create order document
    const order = await Order.create({
-      userId: userId,
-      cartItems: cartItems,
+      userId,
+      items: orderItems,
       shippingAddress,
       paymentMethod,
       totalPrice,
       // status: "PLACED", // default status
    });
 
-   console.log("order:",order);
+   console.log("order:", order);
    // 7️. Clear the user's cart (optional but common)
    await Cart.deleteMany({ userId: userId });
 
@@ -108,7 +122,7 @@ const getAllOrders = asyncHandler(async (req, res) => {
       .json(new ApiResponse(200, orders, "All orders fetched successfully"));
 });
 
-const getOrderStatus = asyncHandler(async (req,res)=>{
+const getOrderStatus = asyncHandler(async (req, res) => {
    // 1️. Get the order ID from req.params or req.query
    // 2️. Find the order by ID in the database
    // 3️. If not found, return ApiError (404)
@@ -121,9 +135,15 @@ const getOrderStatus = asyncHandler(async (req,res)=>{
       throw new ApiError(404, "Order not found");
    }
 
-   return res.status(200).json(
-      new ApiResponse(200, { status: order.status }, "Order status fetched successfully")
-   );
+   return res
+      .status(200)
+      .json(
+         new ApiResponse(
+            200,
+            { status: order.status },
+            "Order status fetched successfully",
+         ),
+      );
 });
 
 const updateOrderStatus = asyncHandler(async (req, res) => {

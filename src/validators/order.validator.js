@@ -2,22 +2,17 @@ import { body, param } from "express-validator";
 
 const createOrderValidator = () => {
    return [
-      body("items")
-         .isArray({ min: 1 })
-         .withMessage("At least one item is required in the order"),
-      body("items.*.bookId")
-         .notEmpty()
-         .withMessage("BookId is required")
-         .isMongoId()
-         .withMessage("Invalid book Id"),
-      body("items.*.quantity")
-         .isInt({ min: 1 })
-         .withMessage("Quantity must be atleast 1"),
       body("shippingAddress")
          .notEmpty()
          .withMessage("Shipping Address is required")
          .isMongoId()
          .withMessage("Invalid address Id"),
+
+      body("paymentMethod")
+         .notEmpty()
+         .withMessage("Payment method is required")
+         .isString()
+         .withMessage("Invalid payment method"),
    ];
 };
 
