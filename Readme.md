@@ -663,5 +663,5 @@ JavaScript , React.js , Tailwindcss , Next.js , Node.js , Express.js , MongoDB ,
 
 
 ## Acknowledgements
-
-- Thanks to [Hitesh Choudhary](https://x.com/Hiteshdotcom) and [Piyush Garg](https://x.com/piyushgarg_dev) sir for the inspiration and guidance for his in-depth backend knowledge and support.
+#### Special Thanks
+A heartfelt thank you to [Hitesh Choudhary](https://x.com/Hiteshdotcom) and [Piyush Garg](https://x.com/piyushgarg_dev) sir for their constant inspiration and valuable guidance. Their deep expertise in backend development and continuous support have played a crucial role in shaping this project.
