@@ -43,6 +43,9 @@ const userSchema = new Schema(
       emailVerificationExpiry: {
          type: Date,
       },
+      refreshToken:{
+         type:String
+      }
    },
    { timestamps: true },
 );
